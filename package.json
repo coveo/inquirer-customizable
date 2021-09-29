@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node --script-mode test.ts"
+    "build": "tsc -b",
+    "start": "ts-node examples/basicCheckbox/example.ts"
   },
   "keywords": [],
   "author": "",

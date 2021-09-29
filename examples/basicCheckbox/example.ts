@@ -1,6 +1,6 @@
 import inquirer from "inquirer";
 import { renderer } from "./checkboxRenderer";
-import { checkboxControls } from "./checkboxControls";
+import { checkboxControls as controls } from "./checkboxControls";
 import {
   CheckboxAnswers,
   CustomizablePrompt,
@@ -8,20 +8,25 @@ import {
 
 inquirer.registerPrompt("test", CustomizablePrompt);
 
-inquirer.prompt<CheckboxAnswers>([
-  {
-    type: "test",
-    name: "hi",
-    style: "radio",
-    keys: [
-      { displayName: "value1", id: "1" },
-      { displayName: "value2", id: "2" },
-    ],
-    values: [
-      { displayName: null, id: "checked" },
-      { displayName: null, id: "unchecked" },
-    ],
-    checkboxControls,
-    renderer: renderer,
-  },
-]);
+inquirer
+  .prompt<CheckboxAnswers>([
+    {
+      type: "test",
+      name: "hi",
+      style: "radio",
+      keys: [
+        { displayName: "value1", id: "myId_1" },
+        { displayName: "value2", id: "myId_2" },
+      ],
+      values: [
+        { displayName: null, id: "checked" },
+        { displayName: null, id: "unchecked" },
+      ],
+      controls,
+      renderer: renderer,
+    },
+  ])
+  .then((answers) =>
+    console.log(`Prompt session complete, here's the object that inquirer would return
+  ${JSON.stringify(answers)}`)
+  );
