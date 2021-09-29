@@ -1,20 +1,13 @@
-import inquirer, {
-  Question,
-  Answers,
-  BaseChoiceMap,
-  DistinctChoice,
-  ChoiceOptions,
-} from "inquirer";
+import { Question, Answers } from "inquirer";
 import Base from "inquirer/lib/prompts/base";
 import { Interface, Key } from "readline";
-import { KeyPressEventManager } from "./KeypressManager";
+import { KeyPressEventManager } from "./keypressManager";
 import cliCursor from "cli-cursor";
 import Paginator from "inquirer/lib/utils/paginator";
 import { map } from "rxjs/operators";
 import Choices from "inquirer/lib/objects/choices";
 import debounce from "lodash.debounce";
 import Choice from "inquirer/lib/objects/choice";
-import Separator from "inquirer/lib/objects/separator";
 
 //#region types
 
@@ -25,7 +18,7 @@ export enum PointerDirection {
   Right = +1,
 }
 
-export type KeyHandler = (this: CheckboxPrompt) => void;
+export type KeyHandler = (this: CustomizablePrompt) => void;
 
 export interface CheckboxAnswers extends Answers {
   key: string;
@@ -37,10 +30,10 @@ export interface CheckboxDimension extends Answers {
   id: string;
 }
 
-interface CheckboxPromptQuestion extends Question<CheckboxAnswers> {
-  keys: ArrayOrAsyncSearchableOf<CheckboxDimension, CheckboxPrompt>;
-  values: ArrayOrAsyncSearchableOf<CheckboxDimension, CheckboxPrompt>;
-  renderer: (this: CheckboxPrompt, error: string) => void;
+interface CustomizablePromptQuestion extends Question<CheckboxAnswers> {
+  keys: ArrayOrAsyncSearchableOf<CheckboxDimension, CustomizablePrompt>;
+  values: ArrayOrAsyncSearchableOf<CheckboxDimension, CustomizablePrompt>;
+  renderer: (this: CustomizablePrompt, error: string) => void;
   defaults: { [key: string]: CheckboxDimension };
   controls: [{ key: string | Key; hint?: string; handler: KeyHandler }];
   shouldLoop?: boolean;
@@ -53,9 +46,9 @@ type ArrayOrAsyncSearchableOf<TReturn, TPrompt extends Base> =
 
 //#endregion
 
-export class CheckboxPrompt extends Base<CheckboxPromptQuestion> {
+export class CustomizablePrompt extends Base<CustomizablePromptQuestion> {
   private static readonly DimensionNames = ["keys", "values"] as const;
-  static defaultOptions: Partial<typeof CheckboxPrompt.prototype.opt> = {};
+  static defaultOptions: Partial<typeof CustomizablePrompt.prototype.opt> = {};
   private done: (callback: any) => void;
   public paginator: Paginator;
   public keys: Choices;
@@ -70,7 +63,7 @@ export class CheckboxPrompt extends Base<CheckboxPromptQuestion> {
   protected render: (error?: string) => void;
 
   public constructor(
-    question: CheckboxPromptQuestion,
+    question: CustomizablePromptQuestion,
     rl: Interface,
     answers: CheckboxAnswers
   ) {
@@ -86,7 +79,7 @@ export class CheckboxPrompt extends Base<CheckboxPromptQuestion> {
   }
 
   private setDimensions() {
-    for (const dimensionName of CheckboxPrompt.DimensionNames) {
+    for (const dimensionName of CustomizablePrompt.DimensionNames) {
       this.setDimension(dimensionName);
     }
   }
@@ -100,7 +93,7 @@ export class CheckboxPrompt extends Base<CheckboxPromptQuestion> {
   }
 
   private setDimension(
-    dimension: typeof CheckboxPrompt.DimensionNames[number]
+    dimension: typeof CustomizablePrompt.DimensionNames[number]
   ) {
     const option = this.opt[dimension];
     let dimensions;
@@ -140,7 +133,7 @@ export class CheckboxPrompt extends Base<CheckboxPromptQuestion> {
 
   private registerDefaultHandler() {
     if (
-      CheckboxPrompt.DimensionNames.some(
+      CustomizablePrompt.DimensionNames.some(
         (dimension) => !Array.isArray(this.opt[dimension])
       )
     ) {
@@ -154,7 +147,7 @@ export class CheckboxPrompt extends Base<CheckboxPromptQuestion> {
   private defaultKeyHandler() {
     return debounce(
       (() => {
-        for (const dimension of CheckboxPrompt.DimensionNames) {
+        for (const dimension of CustomizablePrompt.DimensionNames) {
           const option = this.opt[dimension];
           if (Array.isArray(option)) {
             continue;
@@ -235,52 +228,4 @@ export class CheckboxPrompt extends Base<CheckboxPromptQuestion> {
       this._pointer[dimensionIndex] = attemptIndex;
     }
   }
-
-  // private showHint() {
-  //   this.shouldPrintHint = true;
-  // }
-  // private hideHint() {
-  //   this.shouldPrintHint = false;
-  // }
 }
-// const renderer = function (this: CheckboxPrompt, error: string) {
-//   let message = this.getQuestion();
-//   let bottomContent = "";
-//   if (this.shouldPrintHint) {
-//     message += this.getHintMessage();
-//   }
-
-//   const choicesStr = renderChoices(this.currentKeys, this.pointer);
-
-//   message += "\n" + this.paginator.paginate(choicesStr, this.pointer);
-
-//   if (error) {
-//     bottomContent = chalk.red(">> ") + error;
-//   }
-
-//   this.screen.render(message, bottomContent);
-// };
-
-// function renderChoices(choices: CheckboxKeys[], pointer: number) {
-//   let output = "";
-//   let separatorOffset = 0;
-
-//   choices.forEach((choice, i) => {
-//     const line = getCheckbox(choice.value) + " " + choice.displayName;
-//     if (i - separatorOffset === pointer) {
-//       output += chalk.cyan(figures.pointer + line);
-//     } else {
-//       output += " " + line;
-//     }
-
-//     output += "\n";
-//   });
-
-//   return output.replace(/\n$/, "");
-// }
-
-// function getCheckbox(checked: string) {
-//   return checked == TwoState.Positive
-//     ? chalk.green(figures.radioOn)
-//     : figures.radioOff;
-// }
