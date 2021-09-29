@@ -2,14 +2,14 @@ import inquirer from "inquirer";
 import { renderer } from "./checkboxRenderer";
 import { checkboxControls as controls } from "./checkboxControls";
 import {
-  CheckboxAnswers,
+  CustomizablePromptAnswers,
   CustomizablePrompt,
 } from "../../src/customizablePrompt";
 
 inquirer.registerPrompt("test", CustomizablePrompt);
 
 inquirer
-  .prompt<CheckboxAnswers>([
+  .prompt<CustomizablePromptAnswers>([
     {
       type: "test",
       name: "hi",

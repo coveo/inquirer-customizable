@@ -12,29 +12,36 @@ import Choice from "inquirer/lib/objects/choice";
 //#region types
 
 export enum PointerDirection {
-  Up = -1,
-  Down = +1,
-  Left = -1,
-  Right = +1,
+  Up,
+  Down,
+  Left,
+  Right,
 }
 
 export type KeyHandler = (this: CustomizablePrompt) => void;
 
-export interface CheckboxAnswers extends Answers {
+export interface CustomizablePromptAnswers extends Answers {
   key: string;
   value: string;
 }
 
-export interface CheckboxDimension extends Answers {
+export interface CustomizablePromptDimension extends Answers {
   displayName: string;
   id: string;
 }
 
-interface CustomizablePromptQuestion extends Question<CheckboxAnswers> {
-  keys: ArrayOrAsyncSearchableOf<CheckboxDimension, CustomizablePrompt>;
-  values: ArrayOrAsyncSearchableOf<CheckboxDimension, CustomizablePrompt>;
+interface CustomizablePromptQuestion
+  extends Question<CustomizablePromptAnswers> {
+  keys: ArrayOrAsyncSearchableOf<
+    CustomizablePromptDimension,
+    CustomizablePrompt
+  >;
+  values: ArrayOrAsyncSearchableOf<
+    CustomizablePromptDimension,
+    CustomizablePrompt
+  >;
   renderer: (this: CustomizablePrompt, error: string) => void;
-  defaults: { [key: string]: CheckboxDimension };
+  defaults: { [key: string]: CustomizablePromptDimension };
   controls: [{ key: string | Key; hint?: string; handler: KeyHandler }];
   shouldLoop?: boolean;
   pageSize?: number;
@@ -65,7 +72,7 @@ export class CustomizablePrompt extends Base<CustomizablePromptQuestion> {
   public constructor(
     question: CustomizablePromptQuestion,
     rl: Interface,
-    answers: CheckboxAnswers
+    answers: CustomizablePromptAnswers
   ) {
     super(question, rl, answers);
     this.checkOptions();
@@ -110,7 +117,7 @@ export class CustomizablePrompt extends Base<CustomizablePromptQuestion> {
   }
 
   public transformDimensionToChoice<
-    T extends CheckboxDimension = CheckboxDimension
+    T extends CustomizablePromptDimension = CustomizablePromptDimension
   >(dimension: T): Choice<T> {
     return {
       name: dimension.displayName,
@@ -210,20 +217,31 @@ export class CustomizablePrompt extends Base<CustomizablePromptQuestion> {
   updatePointer(direction: PointerDirection): void {
     let maxBoundary = 0;
     let dimensionIndex = -1;
+    let increment = 0;
     switch (direction) {
       case PointerDirection.Down:
+        maxBoundary = this.keys.length;
+        dimensionIndex = +1;
+        increment = +1;
+        break;
       case PointerDirection.Up:
-        maxBoundary = this.values.length;
+        maxBoundary = this.keys.length;
         dimensionIndex = 1;
+        increment = -1;
         break;
       case PointerDirection.Left:
-      case PointerDirection.Right:
-        maxBoundary = this.keys.length;
+        maxBoundary = this.values.length;
         dimensionIndex = 0;
+        increment = -1;
+        break;
+      case PointerDirection.Right:
+        maxBoundary = this.values.length;
+        dimensionIndex = 0;
+        increment = +1;
         break;
     }
 
-    const attemptIndex = this._pointer[dimensionIndex] + direction;
+    const attemptIndex = this._pointer[dimensionIndex] + increment;
     if (attemptIndex > -1 && attemptIndex < maxBoundary) {
       this._pointer[dimensionIndex] = attemptIndex;
     }

@@ -4,7 +4,7 @@ import {
   CustomizablePrompt,
   PointerDirection,
   KeyHandler,
-} from "../../src/CustomizablePrompt";
+} from "../../src/customizablePrompt";
 
 function onUpKey(this: CustomizablePrompt) {
   this.updatePointer(PointerDirection.Up);
