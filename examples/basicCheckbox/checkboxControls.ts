@@ -1,27 +1,22 @@
-import inquirer, { Answers, Separator } from "inquirer";
 import Choice from "inquirer/lib/objects/choice";
-import { Key } from "readline";
-import { renderer } from "./CheckboxRenderer";
+import type { Key } from "readline";
 import {
-  CheckboxAnswers,
-  CheckboxPrompt,
-  KeyHandler,
+  CustomizablePrompt,
   PointerDirection,
-} from "./index";
+  KeyHandler,
+} from "../../src/CustomizablePrompt";
 
-inquirer.registerPrompt("test", CheckboxPrompt);
-
-function onUpKey(this: CheckboxPrompt) {
+function onUpKey(this: CustomizablePrompt) {
   this.updatePointer(PointerDirection.Up);
   this.render();
 }
 
-function onDownKey(this: CheckboxPrompt) {
+function onDownKey(this: CustomizablePrompt) {
   this.updatePointer(PointerDirection.Down);
   this.render();
 }
 
-function onSpaceKey(this: CheckboxPrompt) {
+function onSpaceKey(this: CustomizablePrompt) {
   const currentValueShort =
     this.answers[this.keys.getChoice(this.pointer[1]).short];
   const currentValue = this.values.find(
@@ -29,11 +24,14 @@ function onSpaceKey(this: CheckboxPrompt) {
   );
   const currentValueIndex = this.values.indexOf(currentValue);
   const newValue = this.values.getChoice((currentValueIndex + 1) % 2);
-  this.assignValueToKey(this.pointer[1], this.values.indexOf(newValue as Choice));
+  this.assignValueToKey(
+    this.pointer[1],
+    this.values.indexOf(newValue as Choice)
+  );
   this.render();
 }
 
-const controls: { key: Key; handler: KeyHandler }[] = [
+export const checkboxControls: { key: Key; handler: KeyHandler }[] = [
   {
     key: {
       sequence: "\u001b[A",
@@ -65,21 +63,3 @@ const controls: { key: Key; handler: KeyHandler }[] = [
     handler: onSpaceKey,
   },
 ];
-
-inquirer.prompt<CheckboxAnswers>([
-  {
-    type: "test",
-    name: "hi",
-    style: "radio",
-    keys: [
-      { displayName: "value1", id: "1" },
-      { displayName: "value2", id: "2" },
-    ],
-    values: [
-      { displayName: null, id: "checked" },
-      { displayName: null, id: "unchecked" },
-    ],
-    controls,
-    renderer: renderer,
-  },
-]);

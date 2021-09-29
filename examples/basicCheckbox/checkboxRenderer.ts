@@ -1,9 +1,9 @@
+import type { CustomizablePrompt } from "../../src/customizablePrompt";
+
 import chalk from "chalk";
 import figures from "figures";
-import { Answers } from "inquirer";
-import { CheckboxPrompt } from ".";
 
-export function renderer(this: CheckboxPrompt, error: string) {
+export function renderer(this: CustomizablePrompt, error: string) {
   let message = this.getQuestion();
   let bottomContent = "";
 
@@ -18,7 +18,7 @@ export function renderer(this: CheckboxPrompt, error: string) {
   this.screen.render(message, bottomContent);
 }
 
-function renderChoices(this: CheckboxPrompt, pointer: number) {
+function renderChoices(this: CustomizablePrompt, pointer: number) {
   let output = "";
   let separatorOffset = 0;
   this.keys.forEach((choice, i) => {
@@ -50,6 +50,6 @@ function renderChoices(this: CheckboxPrompt, pointer: number) {
   return output.replace(/\n$/, "");
 }
 
-function getCheckbox(this: CheckboxPrompt, value: string) {
+function getCheckbox(this: CustomizablePrompt, value: string) {
   return value == "checked" ? chalk.green(figures.radioOn) : figures.radioOff;
 }

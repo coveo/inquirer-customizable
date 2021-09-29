@@ -1,9 +1,8 @@
-import observe from "inquirer/lib/utils/events";
 import type { Interface as ReadlineInterface, Key } from "readline";
 import { Readable } from "stream";
 
 import { fromEvent, Observable } from "rxjs";
-import { filter, map, share, takeUntil } from "rxjs/operators";
+import { filter, share, takeUntil } from "rxjs/operators";
 
 interface ReadlineInterfaceExtended extends ReadlineInterface {
   input: Readable;
