@@ -27,7 +27,7 @@ inquirer
         { displayName: chalk`{red {bold D}elete}`, id: "delete" },
       ],
       controls,
-      renderer: renderer,
+      renderer,
     },
   ])
   .then((answers) =>
