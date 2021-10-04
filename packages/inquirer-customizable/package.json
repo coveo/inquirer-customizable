@@ -1,15 +1,18 @@
 {
   "name": "inquirer-customizable",
   "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
+  "description": "An Inquirer prompt relying on user-defined input and rendering.",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0",
     "build": "tsc -b",
-    "start": "ts-node examples/basicCheckbox/example.ts"
+    "start": "ts-node examples/basicCheckbox/example.ts",
+    "prepublishOnly": "npm run build"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "cli",
+    "prompt",
+    "inquirer"
+  ],
+  "author": "Coveo",
   "license": "Apache-2.0",
   "devDependencies": {
     "@types/inquirer": "^8.1.2",
