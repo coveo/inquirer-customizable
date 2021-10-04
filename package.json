@@ -1,6 +1,6 @@
 {
   "name": "inquirer-customizable",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -26,5 +26,9 @@
     "is-unicode-supported": "^1.1.0",
     "lodash.debounce": "^4.0.8",
     "rxjs": "^7.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/coveo/inquirer-customizable.git"
   }
 }
