@@ -1,0 +1,48 @@
+
+name: "Release"
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    environment: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Fetch all tags
+        run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - name: Build & test
+        run: |
+          npm run setup
+          npx lerna run test
+      - name: Setup Git
+        run: |
+          git config --global user.email action@github.com
+          git config --global user.name GitHub Action
+      - name: Setup SSH Remote
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+        run: |
+          eval "$(ssh-agent -s)"
+          ssh-add - <<< "${DEPLOY_KEY}"
+          mkdir -p ~/.ssh
+          echo "${DEPLOY_KEY}" > ~/.ssh/id_rsa
+          chmod 400 ~/.ssh/id_rsa
+          echo "Host coveo-inquirer-customizable" > ~/.ssh/config
+          echo "Hostname github.com" >> ~/.ssh/config
+          echo "PreferredAuthentications publickey" >> ~/.ssh/config
+          echo -n "IdentityFile " >> ~/.ssh/config
+          echo -n ~ >> ~/.ssh/config
+          echo "/.ssh/id_rsa" >> ~/.ssh/config
+          git remote set-url origin git@coveo-inquirer-customizable:coveo/inquirer-customizable.git
+      - name: Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > .npmrc
+          npx lerna publish --yes
