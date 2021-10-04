@@ -1,0 +1,35 @@
+{
+  "name": "inquirer-customizable",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "build": "tsc -b",
+    "start": "ts-node examples/basicCheckbox/example.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/inquirer": "^8.1.2",
+    "@types/lodash.debounce": "^4.0.6",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "cli-cursor": "^3.1.0",
+    "figures": "^3.2.0",
+    "inquirer": "^8.1.5",
+    "inquirer-checkbox-autocomplete-prompt": "^0.2.0",
+    "is-unicode-supported": "^1.1.0",
+    "lodash.debounce": "^4.0.8",
+    "rxjs": "^7.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/coveo/inquirer-customizable.git",
+    "directory": "./packages/inquirer-customizable"
+  }
+}

@@ -1,0 +1,14 @@
+{
+    "packages": ["packages/*"],
+    "command": {
+      "version": {
+        "allowBranch": "main",
+        "conventionalCommits": true,
+        "createRelease": "github",
+        "message": "[skip ci] chore(release): publish"
+      },
+      "publish": {
+        "verifyAccess": false
+      }
+    }
+  }
