@@ -5,6 +5,11 @@
   "type": "commonjs",
   "types": "types/index.d.ts",
   "main": "dist/src/index.js",
+  "files": [
+    "dist/**",
+    "types/**",
+    "examples/**"
+  ],
   "scripts": {
     "build": "tsc -b",
     "start": "ts-node examples/basicCheckbox/example.ts",
