@@ -3,6 +3,7 @@
   "version": "0.0.4",
   "description": "An Inquirer prompt relying on user-defined input and rendering.",
   "type": "commonjs",
+  "types": "types/index.d.ts",
   "main": "dist/src/index.js",
   "scripts": {
     "build": "tsc -b",

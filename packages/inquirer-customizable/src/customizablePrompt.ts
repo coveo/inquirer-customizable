@@ -31,13 +31,15 @@ export interface CustomizablePromptDimension extends Answers {
 }
 
 interface CustomizablePromptQuestion
-  extends Question<CustomizablePromptAnswers> {
+  extends Question<Answers> {
   keys: ArrayOrAsyncSearchableOf<
     CustomizablePromptDimension,
+    CustomizablePromptQuestion,
     CustomizablePrompt
   >;
   values: ArrayOrAsyncSearchableOf<
     CustomizablePromptDimension,
+    CustomizablePromptQuestion,
     CustomizablePrompt
   >;
   renderer: (this: CustomizablePrompt, error: string) => void;
@@ -47,7 +49,11 @@ interface CustomizablePromptQuestion
   pageSize?: number;
 }
 
-type ArrayOrAsyncSearchableOf<TReturn, TPrompt extends Base> =
+type ArrayOrAsyncSearchableOf<
+  TReturn,
+  TQuestion,
+  TPrompt extends Base<TQuestion>
+> =
   | Array<TReturn>
   | ((this: TPrompt, searchTerm: string) => Promise<TReturn[]>);
 
@@ -72,7 +78,7 @@ export class CustomizablePrompt extends Base<CustomizablePromptQuestion> {
   public constructor(
     question: CustomizablePromptQuestion,
     rl: Interface,
-    answers: CustomizablePromptAnswers
+    answers: CustomizablePromptAnswers | Answers
   ) {
     super(question, rl, answers);
     this.checkOptions();

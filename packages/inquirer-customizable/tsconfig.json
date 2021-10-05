@@ -1,9 +1,12 @@
 {
   "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "types",
     "module": "CommonJS",
     "target": "ES6",
     "esModuleInterop": true,
     "outDir": "dist"
   },
+  "include": ["src"],
   "exclude": ["node_modules"]
 }
