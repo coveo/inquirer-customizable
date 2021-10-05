@@ -1,7 +1,9 @@
 {
   "name": "inquirer-customizable",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "An Inquirer prompt relying on user-defined input and rendering.",
+  "type": "commonjs",
+  "main": "dist/src/index.js",
   "scripts": {
     "build": "tsc -b",
     "start": "ts-node examples/basicCheckbox/example.ts",
