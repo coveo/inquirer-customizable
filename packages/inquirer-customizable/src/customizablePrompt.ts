@@ -91,7 +91,8 @@ export class CustomizablePrompt extends Base<CustomizablePromptQuestion> {
     this._pointer = [0, 0];
     this.keyPressEventManager = new KeyPressEventManager(rl);
 
-    this.paginator = new Paginator(this.screen);
+    //@ts-ignore todo: fix deftype
+    this.paginator = new Paginator(this.screen, { isInfinite: shouldLoop });
     this.answers = { ...this.opt.default };
     this.disabled = { ...this.opt.disabled };
     this.setDimensions();
@@ -267,6 +268,8 @@ export class CustomizablePrompt extends Base<CustomizablePromptQuestion> {
     const attemptIndex = this._pointer[dimensionIndex] + increment;
     if (attemptIndex > -1 && attemptIndex < maxBoundary) {
       this._pointer[dimensionIndex] = attemptIndex;
+    } else if (this.opt.shouldLoop) {
+      this._pointer[dimensionIndex] = attemptIndex < 0 ? maxBoundary - 1 : 0;
     }
   }
 }
