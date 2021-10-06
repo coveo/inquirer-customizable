@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/coveo/inquirer-customizable/compare/v0.2.0...v0.3.0) (2021-10-06)
+
+
+### Features
+
+* support separator+disabled key-value pairs ([b71e3e3](https://github.com/coveo/inquirer-customizable/commit/b71e3e303989bad9cb8e3ee9b55b078d4f81ba3c))
+
+
+
+
+
 # [0.2.0](https://github.com/coveo/inquirer-customizable/compare/v0.1.1...v0.2.0) (2021-10-06)
 
 
