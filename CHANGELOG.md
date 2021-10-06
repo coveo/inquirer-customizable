@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/coveo/inquirer-customizable/compare/v0.3.0...v0.4.0) (2021-10-06)
+
+
+### Bug Fixes
+
+* entrypoint in pkgjson was incorrect ([2b57373](https://github.com/coveo/inquirer-customizable/commit/2b5737306d71c28a06aeefdc107f0900dade7126))
+
+
+### Features
+
+* support dimension looping ([055d158](https://github.com/coveo/inquirer-customizable/commit/055d158fc3b5b21e6c4fa92d0fc09d4d3667a8b1))
+
+
+
+
+
 # [0.3.0](https://github.com/coveo/inquirer-customizable/compare/v0.2.0...v0.3.0) (2021-10-06)
 
 
