@@ -92,7 +92,9 @@ export class CustomizablePrompt extends Base<CustomizablePromptQuestion> {
     this.keyPressEventManager = new KeyPressEventManager(rl);
 
     //@ts-ignore todo: fix deftype
-    this.paginator = new Paginator(this.screen, { isInfinite: shouldLoop });
+    this.paginator = new Paginator(this.screen, {
+      isInfinite: this.opt.shouldLoop,
+    });
     this.answers = { ...this.opt.default };
     this.disabled = { ...this.opt.disabled };
     this.setDimensions();
