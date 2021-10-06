@@ -8,6 +8,7 @@ import { map } from "rxjs/operators";
 import Choices from "inquirer/lib/objects/choices";
 import debounce from "lodash.debounce";
 import Choice from "inquirer/lib/objects/choice";
+import Separator from "inquirer/lib/objects/separator";
 
 //#region types
 
@@ -20,6 +21,11 @@ export enum PointerDirection {
 
 export type KeyHandler = (this: CustomizablePrompt) => void;
 
+export type CustomizablePromptDimensionOption = ArrayOrAsyncSearchableOf<
+  CustomizablePromptDimension | Separator,
+  CustomizablePromptQuestion,
+  CustomizablePrompt
+>;
 export interface CustomizablePromptAnswers extends Answers {
   key: string;
   value: string;
@@ -43,6 +49,7 @@ interface CustomizablePromptQuestion extends Question<Answers> {
   >;
   renderer: (this: CustomizablePrompt, error: string) => void;
   defaults: Record<string, string>;
+  disabled: Record<string, string[]>;
   controls: [{ key: string | Key; hint?: string; handler: KeyHandler }];
   shouldLoop?: boolean;
   pageSize?: number;
@@ -65,13 +72,13 @@ export class CustomizablePrompt extends Base<CustomizablePromptQuestion> {
   public paginator: Paginator;
   public keys: Choices;
   public values: Choices;
+  private readonly disabled: Record<string, string[]>;
   //TODO: move to {x:number,y:number}, tuple is stupid because it's not obvious what dimension is what.
   private _pointer: [number, number];
   public get pointer(): [number, number] {
     return [...this._pointer];
   }
   private keyPressEventManager: KeyPressEventManager;
-
   protected render: (error?: string) => void;
 
   public constructor(
@@ -86,6 +93,7 @@ export class CustomizablePrompt extends Base<CustomizablePromptQuestion> {
 
     this.paginator = new Paginator(this.screen);
     this.answers = { ...this.opt.default };
+    this.disabled = { ...this.opt.disabled };
     this.setDimensions();
     this.render = this.opt.renderer.bind(this);
   }
@@ -96,19 +104,27 @@ export class CustomizablePrompt extends Base<CustomizablePromptQuestion> {
     }
   }
 
-  protected assignValueToKey(keyIndex: number, valueIndex: number) {
+  protected isKeyValuePairDisabled(keyId: string, valueId: string) {
+    return this.disabled[keyId]?.includes(valueId);
+  }
+
+  protected assignValueToKey(keyIndex: number, valueIndex: number): boolean {
     const key = this.keys.get(keyIndex);
     const value = this.values.get(valueIndex);
     if (key.type === "choice" && value.type === "choice") {
+      if (this.isKeyValuePairDisabled(key.short, value.short)) {
+        return false;
+      }
       this.answers[key.short] = value.short;
+      return true;
     }
   }
 
   private setDimension(
     dimension: typeof CustomizablePrompt.DimensionNames[number]
   ) {
-    const option = this.opt[dimension];
-    let dimensions;
+    const option: CustomizablePromptDimensionOption = this.opt[dimension];
+    let dimensions: (Separator | CustomizablePromptDimension)[];
     if (Array.isArray(option)) {
       dimensions = option;
     } else {
@@ -123,14 +139,16 @@ export class CustomizablePrompt extends Base<CustomizablePromptQuestion> {
 
   public transformDimensionToChoice<
     T extends CustomizablePromptDimension = CustomizablePromptDimension
-  >(dimension: T): Choice<T> {
-    return {
-      name: dimension.displayName,
-      short: dimension.id,
-      value: null,
-      disabled: false,
-      type: "choice",
-    };
+  >(dimension: T | Separator): Choice<T> | Separator {
+    return dimension instanceof Separator
+      ? dimension
+      : {
+          name: dimension.displayName,
+          short: dimension.id,
+          value: null,
+          disabled: false,
+          type: "choice",
+        };
   }
 
   _run(cb: (callback: any) => void) {
@@ -225,22 +243,22 @@ export class CustomizablePrompt extends Base<CustomizablePromptQuestion> {
     let increment = 0;
     switch (direction) {
       case PointerDirection.Down:
-        maxBoundary = this.keys.length;
+        maxBoundary = this.keys.realLength;
         dimensionIndex = +1;
         increment = +1;
         break;
       case PointerDirection.Up:
-        maxBoundary = this.keys.length;
+        maxBoundary = this.keys.realLength;
         dimensionIndex = 1;
         increment = -1;
         break;
       case PointerDirection.Left:
-        maxBoundary = this.values.length;
+        maxBoundary = this.values.realLength;
         dimensionIndex = 0;
         increment = -1;
         break;
       case PointerDirection.Right:
-        maxBoundary = this.values.length;
+        maxBoundary = this.values.realLength;
         dimensionIndex = 0;
         increment = +1;
         break;

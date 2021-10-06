@@ -1,4 +1,5 @@
 import inquirer from "inquirer";
+import Separator from "inquirer/lib/objects/separator";
 import { renderer } from "./radioTextRenderer";
 import { checkboxControls as controls } from "./radioTextControls";
 import {
@@ -18,14 +19,20 @@ inquirer
       keys: [
         { displayName: "Sources", id: "sources" },
         { displayName: "Fields", id: "fields" },
+        new Separator("🥔"),
         { displayName: "Pipelines", id: "pipelines" },
       ],
       values: [
         { displayName: chalk`{green {bold A}dd}`, id: "add" },
         { displayName: chalk`{cyan {bold E}dit}`, id: "edit" },
         { displayName: chalk`{white {bold S}kip}`, id: "skip" },
+        new Separator("🥔"),
+
         { displayName: chalk`{red {bold D}elete}`, id: "delete" },
       ],
+      disabled: {
+        sources: ["add"],
+      },
       controls,
       renderer,
     },

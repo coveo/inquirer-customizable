@@ -5,6 +5,7 @@ import type {
 
 import Choice from "inquirer/lib/objects/choice";
 import chalk, { Chalk } from "chalk";
+import stripAnsi from "strip-ansi";
 
 export function renderer(this: CustomizablePrompt, error: string) {
   let message = this.getQuestion();
@@ -29,22 +30,19 @@ function renderChoices(this: CustomizablePrompt, pointer: [number, number]) {
       output += ` ${choice}\n`;
       return;
     }
-    if (choice.disabled) {
-      //todo
-    } else {
-      const isCurrentLine = i - separatorOffset === pointer[1];
-      output +=
-        " " +
-        choice.name.padEnd(14, " ") +
-        "\t" +
-        getRenderedValues.call(
-          this,
-          this.answers[choice.short],
-          pointer[0],
-          isCurrentLine
-        ) +
-        "\n";
-    }
+    const isCurrentLine = i - separatorOffset === pointer[1];
+    output +=
+      " " +
+      choice.name.padEnd(14, " ") +
+      "\t" +
+      getRenderedValues.call(
+        this,
+        choice.short,
+        pointer,
+        isCurrentLine,
+        choice.disabled
+      ) +
+      "\n";
   });
 
   return output.replace(/\n$/, "");
@@ -52,23 +50,35 @@ function renderChoices(this: CustomizablePrompt, pointer: [number, number]) {
 
 function getRenderedValues(
   this: CustomizablePrompt,
-  currentValue: string,
-  xPointer: number,
-  isCurrentLine: boolean
+  key: string,
+  pointer: [number, number],
+  isCurrentLine: boolean,
+  isLineDisabled: boolean
 ) {
   let renderedValues = "";
   let separatorOffset = 0;
-  this.values.choices.forEach((choice, i) => {
+  this.values.forEach((choice, i) => {
     if (choice.type === "separator") {
       separatorOffset++;
       renderedValues += ` ${choice}`;
       return;
     }
-    const isSelected = i - xPointer - separatorOffset === 0 && isCurrentLine;
-    const isCurrentValue = choice.short === currentValue;
 
+    const isValueDisabled =
+      isLineDisabled ||
+      choice.disabled ||
+      this.isKeyValuePairDisabled(key, choice.short);
+    const isSelected = i - pointer[0] - separatorOffset === 0 && isCurrentLine;
+    const isCurrentValue = choice.short === this.answers[key];
     renderedValues +=
-      " " + getRenderedValue.call(this, isCurrentValue, isSelected, choice);
+      " " +
+      getRenderedValue.call(
+        this,
+        isCurrentValue,
+        isSelected,
+        isValueDisabled,
+        choice
+      );
   });
   return renderedValues;
 }
@@ -77,14 +87,20 @@ function getRenderedValue(
   this: CustomizablePrompt,
   isCurrentValue: boolean,
   isSelected: boolean,
+  isDisabled: boolean,
   choice: Choice<CustomizablePromptAnswers>
 ) {
   let chalker: Chalk = chalk;
+  let name = choice.name;
   if (isCurrentValue) {
     chalker = chalker.underline;
   }
   if (isSelected) {
     chalker = chalker.inverse;
   }
-  return chalker(choice.name);
+  if (isDisabled) {
+    chalker = chalker.gray;
+    name = stripAnsi(name);
+  }
+  return chalker(name);
 }
