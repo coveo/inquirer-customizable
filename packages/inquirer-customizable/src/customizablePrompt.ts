@@ -30,8 +30,7 @@ export interface CustomizablePromptDimension extends Answers {
   id: string;
 }
 
-interface CustomizablePromptQuestion
-  extends Question<Answers> {
+interface CustomizablePromptQuestion extends Question<Answers> {
   keys: ArrayOrAsyncSearchableOf<
     CustomizablePromptDimension,
     CustomizablePromptQuestion,
@@ -43,7 +42,7 @@ interface CustomizablePromptQuestion
     CustomizablePrompt
   >;
   renderer: (this: CustomizablePrompt, error: string) => void;
-  defaults: { [key: string]: CustomizablePromptDimension };
+  defaults: Record<string, string>;
   controls: [{ key: string | Key; hint?: string; handler: KeyHandler }];
   shouldLoop?: boolean;
   pageSize?: number;
@@ -86,7 +85,7 @@ export class CustomizablePrompt extends Base<CustomizablePromptQuestion> {
     this.keyPressEventManager = new KeyPressEventManager(rl);
 
     this.paginator = new Paginator(this.screen);
-    this.answers = {};
+    this.answers = { ...this.opt.default };
     this.setDimensions();
     this.render = this.opt.renderer.bind(this);
   }

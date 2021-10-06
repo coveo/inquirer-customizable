@@ -22,6 +22,9 @@ inquirer
         { displayName: null, id: "checked" },
         { displayName: null, id: "unchecked" },
       ],
+      default: {
+        myId_1: "checked",
+      },
       controls,
       renderer: renderer,
     },
