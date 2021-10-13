@@ -156,12 +156,18 @@ export class CustomizablePrompt extends Base<CustomizablePromptQuestion> {
 
   _run(cb: (callback: any) => void) {
     this.done = cb;
+    this.setHandlerCountLimiter();
     this.registerCustomKeyHandlers();
     this.registerValidationHandlers();
     this.registerDefaultHandler();
     cliCursor.hide();
     this.render();
     return this;
+  }
+
+  private setHandlerCountLimiter() {
+    // All the controls + 'line' i.e. enter + defaultHandler
+    this.rl.setMaxListeners(this.opt.controls.length + 2);
   }
 
   private registerDefaultHandler() {
