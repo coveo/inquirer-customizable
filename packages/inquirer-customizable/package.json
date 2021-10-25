@@ -1,6 +1,6 @@
 {
   "name": "inquirer-customizable",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "An Inquirer prompt relying on user-defined input and rendering.",
   "type": "commonjs",
   "types": "types/index.d.ts",
