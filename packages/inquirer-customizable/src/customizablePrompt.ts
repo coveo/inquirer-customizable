@@ -48,7 +48,7 @@ interface CustomizablePromptQuestion extends Question<Answers> {
     CustomizablePrompt
   >;
   renderer: (this: CustomizablePrompt, error: string) => void;
-  defaults: Record<string, string>;
+  defaultAnswers: Record<string, string>;
   disabled: Record<string, string[]>;
   controls: [{ key: string | Key; hint?: string; handler: KeyHandler }];
   shouldLoop?: boolean;
@@ -95,7 +95,7 @@ export class CustomizablePrompt extends Base<CustomizablePromptQuestion> {
     this.paginator = new Paginator(this.screen, {
       isInfinite: this.opt.shouldLoop,
     });
-    this.answers = { ...this.opt.default };
+    this.answers = { ...this.opt.defaultAnswers };
     this.disabled = { ...this.opt.disabled };
     this.setDimensions();
     this.render = this.opt.renderer.bind(this);
