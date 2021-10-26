@@ -65,10 +65,13 @@ type ArrayOrAsyncSearchableOf<
 
 //#endregion
 
-export class CustomizablePrompt extends Base<CustomizablePromptQuestion> {
+export class CustomizablePrompt<
+  TState extends {} = {}
+> extends Base<CustomizablePromptQuestion> {
   private static readonly DimensionNames = ["keys", "values"] as const;
   static defaultOptions: Partial<typeof CustomizablePrompt.prototype.opt> = {};
   private done: (callback: any) => void;
+  protected state: Partial<TState>;
   public paginator: Paginator;
   public keys: Choices;
   public values: Choices;
@@ -87,6 +90,7 @@ export class CustomizablePrompt extends Base<CustomizablePromptQuestion> {
     answers: CustomizablePromptAnswers | Answers
   ) {
     super(question, rl, answers);
+    this.state = {};
     this.checkOptions();
     this._pointer = [0, 0];
     this.keyPressEventManager = new KeyPressEventManager(rl);
